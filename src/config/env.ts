@@ -7,12 +7,16 @@ type Env = {
     NODE_ENV: string;
     DATABASE_URL: string;
     JWT_SECRET: string;
+    BACKEND_URL: string;
+    FRONTEND_URL: string;
 }
 const requiredEnvs = [
     "PORT",
     "NODE_ENV",
     "DATABASE_URL",
-    "JWT_SECRET"
+    "JWT_SECRET",
+    "BACKEND_URL",
+    "FRONTEND_URL"
 ];
 requiredEnvs.forEach((env) => {
     if (!process.env[env]) {
@@ -24,5 +28,7 @@ export const env: Env = {
     PORT: process.env.PORT!,
     NODE_ENV: process.env.NODE_ENV!,
     DATABASE_URL: process.env.DATABASE_URL!,
-    JWT_SECRET: process.env.JWT_SECRET!
+    JWT_SECRET: process.env.JWT_SECRET!,
+    BACKEND_URL: process.env.BACKEND_URL!,
+    FRONTEND_URL: process.env.FRONTEND_URL!,
 };
