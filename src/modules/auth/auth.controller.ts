@@ -21,6 +21,7 @@ const login = catchAsync(async (req: Request, res: Response) => {
         id: user.id,
         name: user.name,
         phone: user.phone,
+        role: user.role,
         email: user.email
     }
     const token = jwt.sign(tokenData, env.JWT_SECRET, { expiresIn: "30d" });
