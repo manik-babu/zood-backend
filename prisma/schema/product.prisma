@@ -1,0 +1,21 @@
+model Product {
+    id            String         @id @default(uuid())
+    name          String
+    description   String
+    price         Decimal        @db.Decimal(10, 2)
+    discount      Decimal?       @db.Decimal(10, 2)
+    status        ProductStatus  @default(AVAILABLE)
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    carts         Cart[]
+    productImages ProductImage[]
+    reviews       Review[]
+
+    @@map("products")
+}
+
+enum ProductStatus {
+    AVAILABLE
+    UNAVAILABLE
+    SOLD_OUT
+}

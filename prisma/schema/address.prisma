@@ -1,0 +1,16 @@
+model Address {
+    id         String   @id @default(uuid())
+    division   String
+    district   String
+    upazila    String
+    additional String
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    // Relations
+    userId String @unique
+    user   User   @relation(fields: [userId], references: [id])
+
+    @@index([userId])
+    @@map("addresses")
+}
