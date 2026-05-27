@@ -24,9 +24,6 @@ export const uploadToCloudinary = async (options: UploadToCloudinaryOptions): Pr
             {
                 folder: `${env.CLOUDINARY_FOLDER}/${options.folder}`,
                 resource_type: options.resource_type || "auto",
-                public_id: options.file.originalname.split('.').slice(0, -1).join('.') + "_" + new Date().getTime() + Math.floor(Math.random() * 10000), // Use original file name without extension as public_id,
-                use_filename: true, // use the original file name as the public_id,
-                unique_filename: true, // Ensure the file name is unique by adding a random string,
             },
             (error, result) => {
                 if (error) {
