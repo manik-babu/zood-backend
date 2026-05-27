@@ -4,6 +4,8 @@ import { productService } from "./product.service";
 import AppError from "../../utils/AppError";
 import { uploadToCloudinary } from "../../config/cloudinary";
 import { addProductSchema } from "./product.validation";
+import { FilterProducts } from "./product.interface";
+import { ProductStatus } from "../../../generated/prisma/enums";
 
 
 const addProduct = catchAsync(async (req: Request, res: Response,) => {
@@ -45,6 +47,23 @@ const addProduct = catchAsync(async (req: Request, res: Response,) => {
         data: product,
     });
 });
+const getProducts = catchAsync(async (req: Request, res: Response) => {
+    const filter: FilterProducts = {
+        search: (req.query.search as string) || "",
+        status: (req.query.status as ProductStatus | "ALL") || "ALL",
+        sort: (req.query.sort as "asc" | "desc") || "desc",
+        page: parseInt(req.query.page as string) || 1,
+        limit: parseInt(req.query.limit as string) || 10,
+    }
+    const products = await productService.getProducts(filter);
+    res.status(200).json({
+        ok: true,
+        message: "Products fetched successfully",
+        data: products,
+    });
+});
+
 export const productController = {
     addProduct,
+    getProducts,
 };

@@ -8,6 +8,6 @@ import { upload } from "../../config/cloudinary";
 const router = Router();
 
 router.post("/", upload.array("images", 5), productController.addProduct);
-
+router.get("/", productController.getProducts);
 
 export const productRouter = router;
