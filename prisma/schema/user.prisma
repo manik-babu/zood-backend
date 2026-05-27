@@ -11,6 +11,7 @@ model User {
     addresses Address?
     orders    Order[]
     carts     Cart[]
+    reviews   Review[]
 
     @@index([phone])
     @@map("users")

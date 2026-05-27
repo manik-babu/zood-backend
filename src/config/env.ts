@@ -9,6 +9,10 @@ type Env = {
     JWT_SECRET: string;
     BACKEND_URL: string;
     FRONTEND_URL: string;
+    CLOUDINARY_CLOUD_NAME: string;
+    CLOUDINARY_API_KEY: string;
+    CLOUDINARY_API_SECRET: string;
+    CLOUDINARY_FOLDER: string;
 }
 const requiredEnvs = [
     "PORT",
@@ -16,7 +20,11 @@ const requiredEnvs = [
     "DATABASE_URL",
     "JWT_SECRET",
     "BACKEND_URL",
-    "FRONTEND_URL"
+    "FRONTEND_URL",
+    "CLOUDINARY_CLOUD_NAME",
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
+    "CLOUDINARY_FOLDER"
 ];
 requiredEnvs.forEach((env) => {
     if (!process.env[env]) {
@@ -31,4 +39,8 @@ export const env: Env = {
     JWT_SECRET: process.env.JWT_SECRET!,
     BACKEND_URL: process.env.BACKEND_URL!,
     FRONTEND_URL: process.env.FRONTEND_URL!,
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
+    CLOUDINARY_FOLDER: process.env.CLOUDINARY_FOLDER!,
 };

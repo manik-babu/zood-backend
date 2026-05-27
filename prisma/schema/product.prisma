@@ -3,7 +3,7 @@ model Product {
     name          String
     description   String
     price         Decimal        @db.Decimal(10, 2)
-    discount      Decimal?       @db.Decimal(10, 2)
+    discountPrice Decimal?       @db.Decimal(10, 2)
     status        ProductStatus  @default(AVAILABLE)
     createdAt     DateTime       @default(now())
     updatedAt     DateTime       @updatedAt
