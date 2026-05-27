@@ -10,7 +10,7 @@ model Order {
     updatedAt  DateTime    @updatedAt
 
     // Relations
-    user  User   @relation(fields: [userId], references: [id])
+    user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     carts Cart[]
 
     @@index([userId])

@@ -4,7 +4,7 @@ model ProductImage {
     url       String
 
     // Relations
-    product Product @relation(fields: [productId], references: [id])
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
     @@index([productId])
     @@map("product_images")
