@@ -1,6 +1,7 @@
 import cloudinary, { upload } from "../../config/cloudinary";
 import { prisma } from "../../lib/prisma";
 import AppError from "../../utils/AppError";
+import { getPublicIdFromUrl } from "../../utils/getPublicId";
 import { FilterProducts } from "./product.interface";
 import { AddProductInput } from "./product.validation";
 
@@ -61,8 +62,56 @@ const getProducts = async (filter: FilterProducts) => {
         }
     };
 }
+const updateProduct = async (data: AddProductInput, id: string) => {
+    const existingProduct = await prisma.product.count({
+        where: {
+            id: id,
+        }
+    });
+    if (existingProduct === 0) {
+        throw new AppError(404, "Product not found");
+    }
+    const updatedProduct = await prisma.product.update({
+        where: {
+            id: id,
+        },
+        data: data,
+    });
+    return updatedProduct;
+}
+const deleteProduct = async (id: string) => {
+    const existingProduct = await prisma.product.count({
+        where: {
+            id: id,
+        }
+    });
+    if (existingProduct === 0) {
+        throw new AppError(404, "Product not found");
+    }
+    const product = await prisma.product.delete({
+        where: {
+            id: id,
+        },
+        include: {
+            images: true,
+        }
+    }).then(async (pd) => {
+        await Promise.all(pd.images.map(async (image) => {
+            console.log("Deleting image from Cloudinary:", image.url);
+            const publicId = getPublicIdFromUrl(image.url);
+            return cloudinary.uploader.destroy(publicId);
+        }));
+        return pd;
+    }).catch((error) => {
+        console.log("Error deleting product:", error);
+        throw new AppError(500, "Failed to delete product");
+    });
+    return product;
+}
 
 export const productService = {
     addProduct,
     getProducts,
+    updateProduct,
+    deleteProduct
 };

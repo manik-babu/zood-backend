@@ -3,7 +3,7 @@ import catchAsync from "../../utils/catchAsync";
 import { productService } from "./product.service";
 import AppError from "../../utils/AppError";
 import { uploadToCloudinary } from "../../config/cloudinary";
-import { addProductSchema } from "./product.validation";
+import { AddProductInput, addProductSchema } from "./product.validation";
 import { FilterProducts } from "./product.interface";
 import { ProductStatus } from "../../../generated/prisma/enums";
 
@@ -62,8 +62,29 @@ const getProducts = catchAsync(async (req: Request, res: Response) => {
         data: products,
     });
 });
+const updateProduct = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id as string;
+    const data = req.body as AddProductInput;
+    const updatedProduct = await productService.updateProduct(data, id);
+    res.status(200).json({
+        ok: true,
+        message: "Product updated successfully",
+        data: updatedProduct,
+    });
+});
+const deleteProduct = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id as string;
+    const deletedProduct = await productService.deleteProduct(id);
+    res.status(200).json({
+        ok: true,
+        message: "Product deleted successfully",
+        data: deletedProduct,
+    });
+});
 
 export const productController = {
     addProduct,
     getProducts,
+    updateProduct,
+    deleteProduct
 };

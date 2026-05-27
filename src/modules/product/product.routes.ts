@@ -9,5 +9,7 @@ const router = Router();
 
 router.post("/", upload.array("images", 5), productController.addProduct);
 router.get("/", productController.getProducts);
+router.patch("/:id", validateRequest(addProductSchema), productController.updateProduct);
+router.delete("/:id", productController.deleteProduct);
 
 export const productRouter = router;
