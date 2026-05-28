@@ -1,4 +1,6 @@
+import status from "http-status";
 import { prisma } from "../../lib/prisma";
+import AppError from "../../utils/AppError";
 import { FilterProducts } from "./user.interface";
 
 const getProducts = async (filter: FilterProducts) => {
@@ -33,6 +35,38 @@ const getProducts = async (filter: FilterProducts) => {
         }
     };
 }
+const getProductsById = async (id: string) => {
+    const record = await prisma.product.count({
+        where: {
+            id: id
+        }
+    })
+    if (record === 0) {
+        throw new AppError(status.NOT_FOUND, "The product is no longer exists.")
+    }
+
+    const pd = await prisma.product.findUnique({
+        where: {
+            id: id
+        },
+        include: {
+            images: true,
+            _count: {
+                select: {
+                    carts: {
+                        where: {
+                            orderId: {
+                                not: null
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    });
+    return pd;
+}
 export const userService = {
     getProducts,
+    getProductsById,
 };

@@ -17,7 +17,16 @@ const getProducts = catchAsync(async (req: Request, res: Response) => {
         data: products,
     });
 });
-
+const getProductsById = catchAsync(async (req: Request, res: Response,) => {
+    const { id } = req.params;
+    const pd = await userService.getProductsById(id as string);
+    res.status(200).json({
+        ok: true,
+        message: "Product retrieved successfully",
+        data: pd
+    })
+})
 export const userController = {
-    getProducts
+    getProducts,
+    getProductsById
 }
