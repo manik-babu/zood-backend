@@ -11,6 +11,22 @@ const getProducts = async (filter: FilterProducts) => {
                 mode: "insensitive"
             },
         },
+        include: {
+            images: {
+                take: 1
+            },
+            _count: {
+                select: {
+                    carts: {
+                        where: {
+                            orderId: {
+                                not: null
+                            }
+                        }
+                    }
+                }
+            }
+        },
         orderBy: {
             price: filter.sort
         },
@@ -25,8 +41,15 @@ const getProducts = async (filter: FilterProducts) => {
             },
         },
     });
+    const formattedProducts = products.map(p => (
+        {
+            ...p,
+            images: p.images[0]?.url,
+            _count: p._count.carts
+        }
+    ))
     return {
-        products,
+        products: formattedProducts,
         meta: {
             total: total,
             page: filter.page,
@@ -66,7 +89,52 @@ const getProductsById = async (id: string) => {
     });
     return pd;
 }
+const addToCart = async (payload: { id: string, quantity: number }, userId: string) => {
+    const record = await prisma.product.count({
+        where: {
+            id: payload.id
+        }
+    })
+    if (record === 0) {
+        throw new AppError(404, "The product might no longer exists")
+    }
+    const userCarts = await prisma.cart.findFirst({
+        where: {
+            userId: userId,
+            productId: payload.id
+        },
+        select: {
+            id: true
+        }
+    })
+    if (userCarts) {
+        const cart = await prisma.cart.update({
+            where: {
+                id: userCarts.id,
+            },
+            data: {
+                quantity: {
+                    increment: payload.quantity
+                }
+            }
+        })
+
+        return cart.id
+    }
+
+    const cart = await prisma.cart.create({
+        data: {
+            productId: payload.id,
+            quantity: payload.quantity,
+            userId: userId
+        }
+    })
+
+    return cart.id
+}
+
 export const userService = {
     getProducts,
     getProductsById,
+    addToCart
 };

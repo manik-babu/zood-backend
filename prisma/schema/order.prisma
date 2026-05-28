@@ -4,6 +4,7 @@ model Order {
     name       String
     phone      String
     address    String
+    sku        String
     totalPrice Decimal     @db.Decimal(10, 2)
     status     OrderStatus @default(PENDING)
     createdAt  DateTime    @default(now())

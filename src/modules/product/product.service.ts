@@ -1,3 +1,4 @@
+import { customAlphabet } from "nanoid";
 import cloudinary, { upload } from "../../config/cloudinary";
 import { prisma } from "../../lib/prisma";
 import AppError from "../../utils/AppError";
@@ -6,9 +7,13 @@ import { FilterProducts } from "./product.interface";
 import { AddProductInput } from "./product.validation";
 
 const addProduct = async (data: AddProductInput, images: { public_id: string; secure_url: string; }[]) => {
+    const nanoid = customAlphabet(
+        "ABCDEDGHIJKLMNPQURSTUVWXYZ123456789", 6
+    )
     const product = await prisma.product.create({
         data: {
             name: data.name,
+            sku: nanoid(),
             description: data.description,
             price: data.price,
             discountPrice: data.discountPrice,
