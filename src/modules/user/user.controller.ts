@@ -27,29 +27,8 @@ const getProductsById = catchAsync(async (req: Request, res: Response,) => {
     })
 })
 
-const addToCart = catchAsync(async (req: Request, res: Response,) => {
-    const data = req.body;
-    const userId = req.user?.id as string
 
-    const result = await userService.addToCart(data, userId);
-    res.status(201).json({
-        ok: true,
-        message: "Product added to the cart!",
-        data: result
-    })
-})
-const getCarts = catchAsync(async (req: Request, res: Response,) => {
-    const userId = req.user?.id as string;
-    const carts = await userService.getCarts(userId);
-    res.status(200).json({
-        ok: true,
-        message: "Carts retrieved successfully",
-        data: carts
-    });
-})
 export const userController = {
     getProducts,
     getProductsById,
-    addToCart,
-    getCarts,
 }

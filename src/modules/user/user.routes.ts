@@ -1,16 +1,18 @@
 import { Router } from "express";
 import { userController } from "./user.controller";
-import validateRequest from "../../middlewares/validator";
-import { cartInputSchema } from "./user.validation";
 import { auth } from "../../middlewares/auth";
 import { UserRole } from "../../../generated/prisma/enums";
+import { cartRouter } from "../cart/cart.routes";
+
 //  /api/v1/users
 const router = Router();
+
+// Product management
 router.get("/products", userController.getProducts)
 router.get("/products/:id", userController.getProductsById)
-router.post("/carts", auth(UserRole.USER), validateRequest(cartInputSchema), userController.addToCart)
-router.get("/carts", auth(UserRole.USER), userController.getCarts);
 
+// Cart management
+router.use("/carts", auth(UserRole.USER), cartRouter);
 
 export const userRouter = router;
 

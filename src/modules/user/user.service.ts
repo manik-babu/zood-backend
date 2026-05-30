@@ -89,87 +89,10 @@ const getProductsById = async (id: string) => {
     });
     return pd;
 }
-const addToCart = async (payload: { id: string, quantity: number }, userId: string) => {
-    const record = await prisma.product.count({
-        where: {
-            id: payload.id
-        }
-    })
-    if (record === 0) {
-        throw new AppError(404, "The product might no longer exists")
-    }
-    const userCarts = await prisma.cart.findFirst({
-        where: {
-            userId: userId,
-            productId: payload.id
-        },
-        select: {
-            id: true
-        }
-    })
-    if (userCarts) {
-        const cart = await prisma.cart.update({
-            where: {
-                id: userCarts.id,
-            },
-            data: {
-                quantity: {
-                    increment: payload.quantity
-                }
-            }
-        })
 
-        return cart.id
-    }
-
-    const cart = await prisma.cart.create({
-        data: {
-            productId: payload.id,
-            quantity: payload.quantity,
-            userId: userId
-        }
-    })
-
-    return cart.id
-}
-const getCarts = async (userId: string) => {
-    const carts = await prisma.cart.findMany({
-        where: {
-            userId: userId,
-            orderId: null
-        },
-        include: {
-            product: {
-                include: {
-                    images: {
-                        take: 1,
-                        select: {
-                            url: true,
-                        }
-                    }
-                },
-                omit: {
-                    createdAt: true,
-                    updatedAt: true,
-                    description: true,
-                    ratings: true,
-                }
-            }
-        },
-        omit: {
-            createdAt: true,
-            updatedAt: true,
-            userId: true,
-            productId: true,
-            orderId: true,
-        }
-    });
-    return carts;
-}
 
 export const userService = {
     getProducts,
     getProductsById,
-    addToCart,
-    getCarts,
+
 };
