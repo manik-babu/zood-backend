@@ -132,9 +132,44 @@ const addToCart = async (payload: { id: string, quantity: number }, userId: stri
 
     return cart.id
 }
+const getCarts = async (userId: string) => {
+    const carts = await prisma.cart.findMany({
+        where: {
+            userId: userId,
+            orderId: null
+        },
+        include: {
+            product: {
+                include: {
+                    images: {
+                        take: 1,
+                        select: {
+                            url: true,
+                        }
+                    }
+                },
+                omit: {
+                    createdAt: true,
+                    updatedAt: true,
+                    description: true,
+                    ratings: true,
+                }
+            }
+        },
+        omit: {
+            createdAt: true,
+            updatedAt: true,
+            userId: true,
+            productId: true,
+            orderId: true,
+        }
+    });
+    return carts;
+}
 
 export const userService = {
     getProducts,
     getProductsById,
-    addToCart
+    addToCart,
+    getCarts,
 };

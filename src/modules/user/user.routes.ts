@@ -9,6 +9,9 @@ const router = Router();
 router.get("/products", userController.getProducts)
 router.get("/products/:id", userController.getProductsById)
 router.post("/carts", auth(UserRole.USER), validateRequest(cartInputSchema), userController.addToCart)
+router.get("/carts", auth(UserRole.USER), userController.getCarts);
+
+
 export const userRouter = router;
 
 
