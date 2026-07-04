@@ -1,6 +1,6 @@
-import { customAlphabet } from "nanoid";
 import { prisma } from "../../lib/prisma";
 import { CreateOrderInput } from "./order.interface";
+import { nanoId } from "../../utils/nanoId";
 
 
 const getCarts = async (userId: string) => {
@@ -28,9 +28,7 @@ const getCarts = async (userId: string) => {
     return { carts: formattedCarts, totalPrice };
 }
 const placeOrder = async (userId: string, data: CreateOrderInput, carts: string[], totalPrice: number) => {
-    const nanoid = customAlphabet(
-        "ABCDEDGHIJKLMNPQURSTUVWXYZ123456789", 6
-    )
+
     await prisma.$transaction(async (tx) => {
         const order = await tx.order.create({
             data: {
@@ -38,7 +36,7 @@ const placeOrder = async (userId: string, data: CreateOrderInput, carts: string[
                 name: data.name,
                 phone: data.phone,
                 address: data.address,
-                sku: nanoid(),
+                sku: nanoId(),
                 totalPrice: totalPrice,
             }
         });
